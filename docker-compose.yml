@@ -20,8 +20,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    dns:
-     - 8.8.8.8
     container_name: frontend
     ports:
       - "8081:8080"

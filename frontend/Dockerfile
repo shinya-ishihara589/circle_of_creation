@@ -8,7 +8,7 @@ WORKDIR /app
 
 # package.json のコピーと依存関係のインストール
 COPY package*.json ./
-RUN npm install
+# RUN npm install
 
 # ソースコードのコピー
 COPY . .
