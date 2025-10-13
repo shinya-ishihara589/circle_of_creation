@@ -32,10 +32,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravelpass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: tabara5896
     volumes:
       - dbdata:/var/lib/mysql
     ports:
@@ -45,7 +45,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8081:80"
+      - "4041:80"
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
