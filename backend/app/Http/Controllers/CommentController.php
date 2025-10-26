@@ -7,15 +7,12 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    // function index()
-    // {
-    //     $comments = Comment::all();
-    //     return view('comments.index', compact(['comments']));
-    // }
     function index()
     {
-        return Comment::all();
+        $comments = Comment::all();
+        return view('comments.index', compact(['comments']));
     }
+
     function store(Request $request)
     {
         $comment = new Comment;

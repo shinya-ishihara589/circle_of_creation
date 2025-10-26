@@ -11,6 +11,5 @@ WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www
 
-EXPOSE 9000
-CMD ["sleep", "infinity"]
-# CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+EXPOSE 80
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]

@@ -14,9 +14,4 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-
-Route::resource('comments', CommentController::class);
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::resource('/', CommentController::class);
