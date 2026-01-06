@@ -14,4 +14,8 @@ use App\Http\Controllers\CommentController;
 |
 */
 
+Route::get('/test', function () {
+    return 'ddd';
+});
+
 Route::resource('/', CommentController::class);

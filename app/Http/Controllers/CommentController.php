@@ -9,8 +9,9 @@ class CommentController extends Controller
 {
     function index()
     {
-        $comments = Comment::all();
-        return view('comments.index', compact(['comments']));
+        return view('game');
+        // $comments = Comment::all();
+        // return view('game.index', compact(['comments']));
     }
 
     function store(Request $request)
