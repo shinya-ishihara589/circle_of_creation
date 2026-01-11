@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     nodejs \
     npm \
-    && docker-php-ext-install pdo_mysql zip
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Apache の設定（DocumentRoot を public に変更）
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
