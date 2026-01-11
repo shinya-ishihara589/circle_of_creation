@@ -23,7 +23,7 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 WORKDIR /var/www/html
 
 # Laravel プロジェクトをコピー
-COPY . .
+COPY . /var/www/html
 
 RUN mkdir -p bootstrap/cache \
     && chown -R www-data:www-data bootstrap/cache \
