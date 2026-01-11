@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Apache の設定（DocumentRoot を public に変更）
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+RUN sed -i 's|/var/www/html|/var/www/html/circle_of_creation/public|g' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 
 # mod_rewrite 有効化
@@ -29,7 +29,8 @@ COPY . /var/www/html
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # npm install & build（Vite）
-WORKDIR /var/www/html
+WORKDIR /var/www/html/circle_of_creation
+
 RUN npm install && npm run build
 
 # Apache 起動
