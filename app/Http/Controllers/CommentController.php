@@ -10,8 +10,6 @@ class CommentController extends Controller
     function index()
     {
         return view('game');
-        // $comments = Comment::all();
-        // return view('game.index', compact(['comments']));
     }
 
     function store(Request $request)

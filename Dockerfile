@@ -6,7 +6,10 @@ FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
     git zip unzip curl libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd 
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
 # Apache rewrite を有効化
 RUN a2enmod rewrite
@@ -25,6 +28,9 @@ COPY . .
 RUN mkdir -p bootstrap/cache \
     && chown -R www-data:www-data bootstrap/cache \
     && chmod -R 775 bootstrap/cache
+
+RUN npm ci
+RUN npm run build
 
 # Composer install
 RUN composer install --no-interaction --optimize-autoloader
