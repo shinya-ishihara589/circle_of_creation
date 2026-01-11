@@ -1,45 +1,36 @@
-# Composer を使うステージ
-FROM composer:2 AS composer_stage
-
-# PHP + Apache
 FROM php:8.2-apache
 
+# 必要な PHP 拡張
 RUN apt-get update && apt-get install -y \
-    git zip unzip curl libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd 
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo_mysql zip
 
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+# Apache の設定（DocumentRoot を public に変更）
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 
-# Apache rewrite を有効化
+# mod_rewrite 有効化
 RUN a2enmod rewrite
 
-# Composer をコピー
-COPY --from=composer_stage /usr/bin/composer /usr/bin/composer
+# Composer インストール
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Apache の DocumentRoot を Laravel の public に変更
-RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|g' /etc/apache2/apache2.conf
-RUN sed -i 's|<Directory /var/www/>|<Directory /var/www/html/public>|g' /etc/apache2/apache2.conf
-RUN sed -i 's|AllowOverride None|AllowOverride All|g' /etc/apache2/apache2.conf
-
-
-WORKDIR /var/www/html
-
-# Laravel プロジェクトをコピー
-COPY . .
-
-RUN mkdir -p bootstrap/cache \
-    && chown -R www-data:www-data bootstrap/cache \
-    && chmod -R 775 bootstrap/cache
-
-RUN npm ci
-RUN npm run build
-
-# Composer install
-RUN composer install --no-interaction --optimize-autoloader
+# プロジェクトをコピー
+COPY . /var/www/html
 
 # 権限調整
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 80
+# npm install & build（Vite）
+WORKDIR /var/www/html
+RUN npm install && npm run build
+
+# Apache 起動
+CMD ["apache2-foreground"]
