@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libonig-dev \
     libxml2-dev \
+    default-mysql-client \
+    libmysqlclient-dev \
     nodejs \
     npm \
     && docker-php-ext-install pdo pdo_mysql zip
