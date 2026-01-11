@@ -17,13 +17,16 @@ RUN a2enmod rewrite
 # Composer をコピー
 COPY --from=composer_stage /usr/bin/composer /usr/bin/composer
 
-# DocumentRoot を public に変更
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Apache の DocumentRoot を Laravel の public に変更
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Directory 設定も public に変更
+RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 
 # Laravel プロジェクトをコピー
-COPY . /var/www/html
+COPY . .
 
 RUN mkdir -p bootstrap/cache \
     && chown -R www-data:www-data bootstrap/cache \
