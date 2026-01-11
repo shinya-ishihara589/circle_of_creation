@@ -18,10 +18,10 @@ RUN a2enmod rewrite
 COPY --from=composer_stage /usr/bin/composer /usr/bin/composer
 
 # Apache の DocumentRoot を Laravel の public に変更
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-# Directory 設定も public に変更
 RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|g' /etc/apache2/apache2.conf
+RUN sed -i 's|<Directory /var/www/>|<Directory /var/www/html/public>|g' /etc/apache2/apache2.conf
+RUN sed -i 's|AllowOverride None|AllowOverride All|g' /etc/apache2/apache2.conf
+
 
 WORKDIR /var/www/html
 
