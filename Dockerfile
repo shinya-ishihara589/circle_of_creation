@@ -26,7 +26,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY . /var/www/html/circle_of_creation/
 
 # 権限調整
-RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 777 /var/www/html/circle_of_creation/storage /var/www/html/circle_of_creation/bootstrap/cache
 
 # npm install & build（Vite）
 WORKDIR /var/www/html/circle_of_creation
