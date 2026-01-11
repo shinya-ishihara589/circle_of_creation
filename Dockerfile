@@ -23,7 +23,7 @@ RUN a2enmod rewrite
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # プロジェクトをコピー
-COPY . /var/www/html
+COPY . /var/www/html/circle_of_creation/
 
 # 権限調整
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
