@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    function index()
+    function index(Request $request)
     {
+        $comment = new Comment;
+        $comment->name = $request->ip();
+        $comment->comment = $request->ip();
+        $comment->save();
         return view('game');
     }
 
@@ -21,8 +25,9 @@ class CommentController extends Controller
         $comments = Comment::get();
         return view('comments.index', compact(['comments']));
     }
-    function destroy()
+
+    function ranking()
     {
-        return 0;
+        return Comment::count();
     }
 }

@@ -15,3 +15,4 @@ use App\Http\Controllers\CommentController;
 */
 
 Route::resource('/', CommentController::class);
+Route::get('/ranking', [CommentController::class, 'ranking']);
