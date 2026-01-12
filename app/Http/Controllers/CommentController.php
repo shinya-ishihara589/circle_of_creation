@@ -4,15 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
     function index(Request $request)
     {
-        $comment = new Comment;
-        $comment->name = $request->ip();
-        $comment->comment = $request->ip();
-        $comment->save();
+        Log::info($request->ip());
         return view('game');
     }
 
