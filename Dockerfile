@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     nodejs \
     npm \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install pdo_mysql zip
 
 # Apache の DocumentRoot を変更
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/circle_of_creation/public
