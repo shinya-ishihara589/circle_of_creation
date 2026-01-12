@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Apache の DocumentRoot を変更
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/circre_of_creation/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/circle_of_creation/public
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/000-default.conf \
