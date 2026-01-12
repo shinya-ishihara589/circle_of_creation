@@ -27,10 +27,6 @@ RUN a2enmod rewrite
 # Composerをインストール
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# 権限の設定
-RUN chmod -R 777 /var/www/html/circle_of_creation/storage \
-    /var/www/html/circle_of_creation/bootstrap/cache
-
 # デフォルトフォルダの設定
 WORKDIR /var/www/html/circle_of_creation
 
