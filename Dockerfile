@@ -30,7 +30,4 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # デフォルトフォルダの設定
 WORKDIR /var/www/html/circle_of_creation
 
-# npmをインストール および 実行
-RUN npm install && npm run build
-
 CMD ["apache2-foreground"]
