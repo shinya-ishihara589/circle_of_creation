@@ -16,9 +16,9 @@
  */
 export class NumberTouchGameManager {
     #num = 0;
-    #width = 100;
-    #height = 100;
-    #numOfSides;
+    #panelWidth = 100;
+    #panelHeight = 100;
+    #numOfSides = 5;
     #numOfPanel;
     #panelNums;
 
@@ -32,10 +32,14 @@ export class NumberTouchGameManager {
         PLAYING: 'PLAYING',
         CLEARED: 'CLEARED',
         GAME_OVER: 'GAME_OVER',
-    };
-    constructor(numOfSides) {
-        this.#numOfSides = numOfSides;
-        this.#numOfPanel = numOfSides * numOfSides;
+    }
+
+    #START_PROPERTY = {
+        LAYOUT: 'START',
+    }
+
+    constructor() {
+        this.#numOfPanel = this.#numOfSides * this.#numOfSides;
 
         this.#panelNums = Array.from({
             length: this.#numOfPanel
@@ -48,6 +52,7 @@ export class NumberTouchGameManager {
     }
 
     pushStart() {
+        this.#state = 'START';
         this.#startTime = new Date();
     }
 
@@ -86,12 +91,12 @@ export class NumberTouchGameManager {
 
     getPos() {
         const arrKey = this.#panelNums.indexOf(this.#num);
-        let x = (arrKey % this.#numOfSides) * this.#width;
-        let y = Math.floor(arrKey / this.#numOfSides) * this.#height;
+        let x = (arrKey % this.#numOfSides) * this.#panelWidth;
+        let y = Math.floor(arrKey / this.#numOfSides) * this.#panelHeight;
         return {
             x: x,
-            y: y
-        };
+            y: y,
+        }
     }
     numCount() {
         this.#num++;
@@ -106,15 +111,28 @@ export class NumberTouchGameManager {
     }
 
     get width() {
-        return this.#width;
+        return this.#panelWidth;
     }
 
     get height() {
-        return this.#height;
+        return this.#panelHeight;
     }
 
     get state() {
         return this.#state;
+    }
+
+    get numOfSides() {
+        return this.#numOfSides;
+    }
+
+    get panelRect() {
+        return {
+            x: x,
+            y: x,
+            width: this.#panelWidth,
+            height: this.#panelHeight,
+        }
     }
 
     get clearTime() {
