@@ -9,6 +9,8 @@
             border: 1px solid #000;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body style="text-align: center;">
@@ -40,6 +42,7 @@
                 canvasRenderer.clearAll();
                 panel.state = 'START';
                 panel.pushStart();
+                // const gt = new GameTimer();
             }
 
             if (panel.state === 'START') {
@@ -67,11 +70,24 @@
             }
 
             if (panel.state === 'CLEARED') {
+                let clearTime = panel.clearTime;
+
                 canvasRenderer.clearAll();
-                canvasRenderer.ctx.fillText(panel.clearTime, 250, 150);
+                canvasRenderer.ctx.fillText(clearTime, 250, 150);
                 canvasRenderer.ctx.fillText('ReStart', 250, 250);
                 panel.state = 'START';
                 panel = new NumberTouchGameManager(panel.numOfSides);
+
+                $.ajax({
+                    url: "/update",
+                    method: "POST",
+                    data: {
+                        time: clearTime,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+
+                    },
+                    dataType: "json",
+                }).done(function(res) {}).fail(function() {});
             }
 
             if (panel.state === 'GAME_OVER') {
@@ -83,6 +99,9 @@
             }
         });
     </script>
+    @foreach ($rankingData as $no => $ranking)
+    <p>{{ $no + 1 }}：{{ $ranking->time }}：{{ $ranking->created_at }}</p>
+    @endforeach
 </body>
 
 </html>

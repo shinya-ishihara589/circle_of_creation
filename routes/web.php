@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\RankingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,4 @@ use App\Http\Controllers\CommentController;
 
 Route::resource('/', CommentController::class);
 Route::get('/ranking', [CommentController::class, 'ranking']);
+Route::post('/update', [RankingController::class, 'update']);

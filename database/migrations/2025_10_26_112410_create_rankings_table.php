@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laravel.comments', function (Blueprint $table) {
+        Schema::create('laravel.rankings', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->text('comment');
+            $table->string('time', 255);
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('rankings');
     }
 };

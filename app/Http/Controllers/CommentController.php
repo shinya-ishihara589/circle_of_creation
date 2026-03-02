@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Ranking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -11,7 +12,10 @@ class CommentController extends Controller
     function index(Request $request)
     {
         Log::info($request->ip());
-        return view('game');
+        $ranking = new Ranking;
+        $rankingData = $ranking->limit(10)->orderByDesc('time')->get();
+
+        return view('game', compact('rankingData'));
     }
 
     function store(Request $request)

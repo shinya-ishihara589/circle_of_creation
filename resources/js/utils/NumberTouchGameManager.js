@@ -15,15 +15,18 @@
  *  -    set num(), get num ()など
  */
 export class NumberTouchGameManager {
+    // :TODO 別クラスで代用予定
+    #startTime;
+    #endTime;
+    // :TODO 別クラスで代用予定
+
     #num = 0;
     #panelWidth = 100;
     #panelHeight = 100;
     #numOfSides = 5;
     #numOfPanel;
-    #panelNums;
+    #panelNums;  // panelsで代用予定
 
-    #startTime;
-    #endTime;
     #state = 'READY';
 
     #GAME_STATES = {
@@ -37,6 +40,9 @@ export class NumberTouchGameManager {
     #START_PROPERTY = {
         LAYOUT: 'START',
     }
+
+
+    #panels;
 
     constructor() {
         this.#numOfPanel = this.#numOfSides * this.#numOfSides;
