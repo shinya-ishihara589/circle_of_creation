@@ -17,7 +17,7 @@ services:
   db:
     image: mysql:8.0
     restart: always
-    command: --ssl=0
+    command: --ssl=0 --require_secure_transport=OFF
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
