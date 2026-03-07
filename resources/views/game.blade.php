@@ -15,6 +15,8 @@
 
 <body style="text-align: center;">
     @vite('resources/js/app.js')
+    名前を入力しておくとクリア後に自動入力されます。<br>
+    名前入力：<input id="nameInput" type="text" maxlength="20" style="position:absolute;" value="匿名"><br>
     <canvas id="canvas" width="500" height="500"></canvas>
     <script type="module">
         // CanvasのCoreクラスをインスタンス化する
@@ -78,10 +80,13 @@
                 panel.state = 'START';
                 panel = new NumberTouchGameManager(panel.numOfSides);
 
+                let name = $('#nameInput').val();
+
                 $.ajax({
                     url: "/update",
                     method: "POST",
                     data: {
+                        name: name,
                         time: clearTime,
                         _token: $('meta[name="csrf-token"]').attr('content')
 
@@ -99,8 +104,9 @@
             }
         });
     </script>
+    <p>トップ10が表示される予定です。</p>
     @foreach ($rankingData as $no => $ranking)
-    <p>{{ $no + 1 }}：{{ $ranking->time }}：{{ $ranking->created_at }}</p>
+    <p>{{ $no + 1 }}：{{ $ranking->name }}：{{ $ranking->time }}</p>
     @endforeach
 </body>
 

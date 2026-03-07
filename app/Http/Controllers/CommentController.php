@@ -13,7 +13,7 @@ class CommentController extends Controller
     {
         Log::info($request->ip());
         $ranking = new Ranking;
-        $rankingData = $ranking->limit(10)->orderByDesc('time')->get();
+        $rankingData = $ranking->limit(10)->orderBy('time')->get();
 
         return view('game', compact('rankingData'));
     }
