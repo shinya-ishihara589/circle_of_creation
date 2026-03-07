@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     nodejs \
     npm \
+    && apt-get update && apt-get install -y libmariadb-dev \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Apache の DocumentRoot を Laravel の public に変更
