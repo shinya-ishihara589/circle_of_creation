@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Apache の DocumentRoot を Laravel の public に変更
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/circle_of_creation/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # DocumentRoot と Directory のみ正しく置換
 RUN sed -ri -e "s#DocumentRoot /var/www/html#DocumentRoot ${APACHE_DOCUMENT_ROOT}#g" \
