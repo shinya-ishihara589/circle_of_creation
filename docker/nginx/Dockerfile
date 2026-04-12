@@ -1,19 +1,7 @@
-FROM php:8.2-fpm
+FROM nginx:latest
 
-# 必須パッケージ（nano含む）
-RUN apt-get update && apt-get install -y \
-    nano \
-    git \
-    unzip \
-    libzip-dev \
-    libonig-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-install pdo_mysql zip
+# Nginx の設定ファイルをコンテナにコピー
+COPY ./default.conf /etc/nginx/conf.d/default.conf
 
-# Composer install
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Laravel の作業ディレクトリ
+# Laravel のコードを置くディレクトリ
 WORKDIR /var/www/html
