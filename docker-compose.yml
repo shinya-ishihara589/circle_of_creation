@@ -11,8 +11,8 @@ services:
 
   nginx:
     build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
+      context: /home/s_ishihara/projects/circle_of_creation/develop
+      dockerfile: /home/s_ishihara/projects/circle_of_creation/develop/docker/nginx/Dockerfile
     ports:
       - "8001:80"
     volumes:
