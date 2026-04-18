@@ -9,7 +9,7 @@ services:
     build: ./docker/nginx
     container_name: nginx
     ports:
-      - "8080:80"
+      - "4288:80"
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
