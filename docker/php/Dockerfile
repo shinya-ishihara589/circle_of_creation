@@ -9,7 +9,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpng-dev \
     libjpeg-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    curl \
+    gnupg \
+    && curl -sL https://nodesource.com | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd \
     --with-freetype \
