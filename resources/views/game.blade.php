@@ -193,7 +193,7 @@
                 const name = $('#nameInput').val();
 
                 canvasRenderer.clearAll();
-                canvasRenderer.ctx.fillText(`CLEAR! ${clearTime}s`, 250, 150);
+                canvasRenderer.ctx.fillText(`CLEAR! ${finalTime}`, 250, 150);
                 canvasRenderer.ctx.fillText('ReStart Click', 250, 250);
 
                 // 同期的にランキング更新 -> 取得
@@ -202,7 +202,7 @@
                     method: "POST",
                     data: {
                         name: name,
-                        time: clearTime,
+                        time: finalTime,
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     dataType: "json",
