@@ -70,109 +70,111 @@
         </div>
     </div>
     <script type="module">
-        const canvas = document.getElementById('canvas');
-        const canvasRenderer = new window.CanvasRenderer('canvas');
-        const timer = new window.GameTimer();
-        let panel = new window.NumberTouchGameManager();
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('canvas');
+            const canvasRenderer = new window.CanvasRenderer('canvas');
+            const timer = new window.GameTimer();
+            let panel = new window.NumberTouchGameManager();
 
-        let startTime; // 開始時間
-        let timerInterval; // タイマーを止めるための識別番号
+            let startTime; // 開始時間
+            let timerInterval; // タイマーを止めるための識別番号
 
-        // 初回描画
-        canvasRenderer.clearAll();
-        canvasRenderer.drawRect(100, 200, 300, 100);
-        canvasRenderer.drawText("START", 250, 250);
+            // 初回描画
+            canvasRenderer.clearAll();
+            canvasRenderer.drawRect(100, 200, 300, 100);
+            canvasRenderer.drawText("START", 250, 250);
 
-        canvas.addEventListener('click', function(e) {
-            const x = e.clientX - canvas.getBoundingClientRect().left;
-            const y = e.clientY - canvas.getBoundingClientRect().top;
+            canvas.addEventListener('click', function(e) {
+                const x = e.clientX - canvas.getBoundingClientRect().left;
+                const y = e.clientY - canvas.getBoundingClientRect().top;
 
-            // 1. READY (START待ち)
-            if (panel.state === 'READY') {
-                // タイマー開始！ 表示の更新も任せる
-                timer.start((timeString) => {
-                    document.getElementById('timerDisplay').innerText = timeString;
-                });
+                // 1. READY (START待ち)
+                if (panel.state === 'READY') {
+                    // タイマー開始！ 表示の更新も任せる
+                    timer.start((timeString) => {
+                        document.getElementById('timerDisplay').innerText = timeString;
+                    });
 
-                canvasRenderer.clearAll();
-                panel.state = 'START';
-                panel.pushStart();
-            }
+                    canvasRenderer.clearAll();
+                    panel.state = 'START';
+                    panel.pushStart();
+                }
 
-            // 2. START (パネル表示)
-            if (panel.state === 'START') {
-                canvasRenderer.clearAll();
-                let panelNums = panel.panelNums;
-                for (let panelY = 0; panelY < panel.numOfSides; panelY++) {
-                    for (let panelX = 0; panelX < panel.numOfSides; panelX++) {
-                        const startX = (panelX * panel.width);
-                        const startY = (panelY * panel.height);
-                        let arrNum = panelY * panel.numOfSides + panelX;
-                        canvasRenderer.ctx.strokeRect(startX, startY, panel.width, panel.height);
-                        canvasRenderer.ctx.fillText(panelNums[arrNum] + 1, startX + 50, startY + 50);
+                // 2. START (パネル表示)
+                if (panel.state === 'START') {
+                    canvasRenderer.clearAll();
+                    let panelNums = panel.panelNums;
+                    for (let panelY = 0; panelY < panel.numOfSides; panelY++) {
+                        for (let panelX = 0; panelX < panel.numOfSides; panelX++) {
+                            const startX = (panelX * panel.width);
+                            const startY = (panelY * panel.height);
+                            let arrNum = panelY * panel.numOfSides + panelX;
+                            canvasRenderer.ctx.strokeRect(startX, startY, panel.width, panel.height);
+                            canvasRenderer.ctx.fillText(panelNums[arrNum] + 1, startX + 50, startY + 50);
+                        }
+                    }
+                    panel.state = 'PLAYING';
+                }
+                // 3. PLAYING (クリック判定)
+                else if (panel.state === 'PLAYING') {
+                    let isCorrect = panel.judge(x, y);
+                    if (isCorrect) {
+                        let pos = panel.getPos();
+                        panel.numCount();
+                        canvasRenderer.ctx.clearRect(pos.x, pos.y, 100, 100);
                     }
                 }
-                panel.state = 'PLAYING';
-            }
-            // 3. PLAYING (クリック判定)
-            else if (panel.state === 'PLAYING') {
-                let isCorrect = panel.judge(x, y);
-                if (isCorrect) {
-                    let pos = panel.getPos();
-                    panel.numCount();
-                    canvasRenderer.ctx.clearRect(pos.x, pos.y, 100, 100);
-                }
-            }
 
-            // 4. CLEARED (クリア処理とランキング更新)
-            if (panel.state === 'CLEARED') {
-                timer.stop(); // タイマー停止
-                const finalTime = timer.formattedTime; // 最終タイム取得
+                // 4. CLEARED (クリア処理とランキング更新)
+                if (panel.state === 'CLEARED') {
+                    timer.stop(); // タイマー停止
+                    const finalTime = timer.formattedTime; // 最終タイム取得
 
-                const name = $('#nameInput').val();
+                    const name = $('#nameInput').val();
 
-                canvasRenderer.clearAll();
-                canvasRenderer.ctx.fillText(`CLEAR! ${clearTime}s`, 250, 150);
-                canvasRenderer.ctx.fillText('ReStart Click', 250, 250);
+                    canvasRenderer.clearAll();
+                    canvasRenderer.ctx.fillText(`CLEAR! ${clearTime}s`, 250, 150);
+                    canvasRenderer.ctx.fillText('ReStart Click', 250, 250);
 
-                // 同期的にランキング更新 -> 取得
-                $.ajax({
-                    url: "/ranking/update", // ここで保存と取得の両方を行う
-                    method: "POST",
-                    data: {
-                        name: name,
-                        time: clearTime,
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: "json",
-                }).done(function(res) {
-                    // サーバーから返ってきた最新ランキング(res)で画面を書き換える
-                    let html = '';
-                    res.forEach((data, index) => {
-                        html += `<p>${index + 1}位：${data.name}：${data.time}</p>`;
+                    // 同期的にランキング更新 -> 取得
+                    $.ajax({
+                        url: "/ranking/update", // ここで保存と取得の両方を行う
+                        method: "POST",
+                        data: {
+                            name: name,
+                            time: clearTime,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                    }).done(function(res) {
+                        // サーバーから返ってきた最新ランキング(res)で画面を書き換える
+                        let html = '';
+                        res.forEach((data, index) => {
+                            html += `<p>${index + 1}位：${data.name}：${data.time}</p>`;
+                        });
+                        $('#ranking-list').html(html);
+                        console.log("ランキングを更新しました");
+                    }).fail(function(err) {
+                        console.error("保存または取得に失敗しました", err);
                     });
-                    $('#ranking-list').html(html);
-                    console.log("ランキングを更新しました");
-                }).fail(function(err) {
-                    console.error("保存または取得に失敗しました", err);
-                });
 
-                // ゲームリセット準備
-                panel.state = 'READY';
-                panel = new NumberTouchGameManager(panel.numOfSides);
-            }
+                    // ゲームリセット準備
+                    panel.state = 'READY';
+                    panel = new NumberTouchGameManager(panel.numOfSides);
+                }
 
-            // 5. GAME OVER
-            if (panel.state === 'GAME_OVER') {
-                // --- タイマー停止とリセット ---
-                clearInterval(timerInterval);
-                document.getElementById('timerDisplay').innerText = "0.00";
+                // 5. GAME OVER
+                if (panel.state === 'GAME_OVER') {
+                    // --- タイマー停止とリセット ---
+                    clearInterval(timerInterval);
+                    document.getElementById('timerDisplay').innerText = "0.00";
 
-                canvasRenderer.clearAll();
-                canvasRenderer.ctx.fillText('GAME OVER', 250, 250);
-                panel.state = 'READY';
-                panel = new NumberTouchGameManager(panel.numOfSides);
-            }
+                    canvasRenderer.clearAll();
+                    canvasRenderer.ctx.fillText('GAME OVER', 250, 250);
+                    panel.state = 'READY';
+                    panel = new NumberTouchGameManager(panel.numOfSides);
+                }
+            });
         });
     </script>
 </body>
