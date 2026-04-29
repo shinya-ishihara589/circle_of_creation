@@ -71,9 +71,9 @@
     </div>
     <script type="module">
         const canvas = document.getElementById('canvas');
-        const canvasRenderer = new CanvasRenderer('canvas');
-        const timer = new GameTimer();
-        let panel = new NumberTouchGameManager();
+        const canvasRenderer = new window.CanvasRenderer('canvas');
+        const timer = new window.GameTimer();
+        let panel = new window.NumberTouchGameManager();
 
         let startTime; // 開始時間
         let timerInterval; // タイマーを止めるための識別番号
