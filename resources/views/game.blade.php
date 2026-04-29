@@ -176,8 +176,8 @@
         });
 
 
-
-        export class Timer {
+        // :TODO後ほど削除
+        class Timer {
             #startTime = null;
             #endTime = null;
             #timerInterval = null;
