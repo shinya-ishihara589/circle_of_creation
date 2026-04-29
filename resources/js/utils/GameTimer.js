@@ -1,30 +1,62 @@
 /**
- * ゲームタイマーのクラス
+ * ゲームタイマーを管理するクラス
  */
 export class GameTimer {
-    #startTime; // ゲームスタート時の時間
-    #endTime; // ゲーム終了時の時間
+    #startTime = null;
+    #endTime = null;
+    #timerInterval = null;
 
     /**
-     * 
+     * タイマーを開始する
+     * @param {Function} callback 毎秒（毎フレーム）実行したい処理
      */
-    startGame() {
-        this.#startTime = new Date();
+    start(callback) {
+        this.#startTime = Date.now();
+        this.#endTime = null;
+
+        // 以前のタイマーが動いていれば止める
+        if (this.#timerInterval) clearInterval(this.#timerInterval);
+
+        // 10ミリ秒ごとに計算してcallbackに渡す
+        this.#timerInterval = setInterval(() => {
+            if (callback) callback(this.formattedTime);
+        }, 10);
     }
 
-    endGame() {
-        this.#endTime = new Date();
+    /**
+     * タイマーを停止する
+     */
+    stop() {
+        this.#endTime = Date.now();
+        clearInterval(this.#timerInterval);
     }
 
-    restartGame() {
-        this.#startTime = new Date();
+    /**
+     * リセット
+     */
+    reset() {
+        this.stop();
+        this.#startTime = null;
         this.#endTime = null;
     }
 
     /**
-     * クリアタイムを取得する
+     * 現在の経過時間を「00:00.00」の形式で取得する（読み取り専用）
      */
-    get clearTime() {
-        return this.#endTime - this.#startTime;
+    get formattedTime() {
+        if (!this.#startTime) return "0:00.00";
+
+        const now = this.#endTime || Date.now();
+        const diffMs = now - this.#startTime;
+
+        const m = Math.floor(diffMs / 60000);
+        const s = Math.floor((diffMs % 60000) / 1000);
+        const ms = Math.floor((diffMs % 1000) / 10);
+
+        const strM = String(m).padStart(1, '0');
+        const strS = String(s).padStart(2, '0');
+        const strMs = String(ms).padStart(2, '0');
+
+        return `${strM}:${strS}.${strMs}`;
     }
 }

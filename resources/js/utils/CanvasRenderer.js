@@ -1,103 +1,87 @@
 /**
  * CanvasのCoreクラス
- * - canvas/context の管理
- * - クリア処理
- * - 座標変換
- * - 画像描画
- * - テキスト描画
- * - パス描画
  */
 export class CanvasRenderer {
-    // 画面のサイズ
     #canvas;
+    #ctx;
     #width;
     #height;
-    #ctx;
-    #fontSize = '50px';
-    #clientRect;
 
     /**
-     * コンストラクタ
+     * @param {string} id Canvas要素のID
      */
     constructor(id = 'canvas') {
-        this.#init(id);
-    }
-
-    /**
-     * 初期化メソッド
-     * @param string CanvasのID
-     */
-    #init(id) {
         this.#canvas = document.getElementById(id);
 
-        // Canvasの存在の確認
         if (!this.#canvas) {
             throw new Error(`Canvas element '${id}' が見つかりません`);
         }
 
+        this.#ctx = this.#canvas.getContext('2d');
         this.#width = this.#canvas.width;
         this.#height = this.#canvas.height;
-        this.#ctx = this.#canvas.getContext('2d');
-        this.#ctx.font = `${this.#fontSize} Arial sans-serif`;
+
+        this.#initStyle();
+    }
+
+    /**
+     * デフォルトの描画スタイルを設定
+     */
+    #initStyle() {
+        this.#ctx.font = '50px Arial, sans-serif';
         this.#ctx.fillStyle = 'black';
+        this.#ctx.strokeStyle = 'black'; // 枠線の色
         this.#ctx.textAlign = 'center';
         this.#ctx.textBaseline = 'middle';
-        this.#clientRect = this.#canvas.getBoundingClientRect();
     }
 
     /**
-     * Canvasに指定の文字を描画する
-     * @param {string} text 
-     * @param {integer} width 
-     * @param {integer} height 
+     * テキストを描画
+     * @param {string} text 描画する文字
+     * @param {number} x X座標
+     * @param {number} y Y座標
      */
-    drawText(text, width, height) {
-        this.#ctx.fillText(text, width, height);
+    drawText(text, x, y) {
+        this.#ctx.fillText(text, x, y);
     }
 
     /**
-     * Canvasに四角形を描画する
-     * @param {integer} rectX 
-     * @param {integer} rextY 
-     * @param {integer} width 
-     * @param {integer} height 
+     * 矩形の枠線を描画
+     * @param {number} x 開始X座標
+     * @param {number} y 開始Y座標
+     * @param {number} w 幅
+     * @param {number} h 高さ
      */
-    drawRect(rectX, rextY, width, height) {
-        this.#ctx.strokeRect(rectX, rextY, width, height);
+    drawRect(x, y, w, h) {
+        this.#ctx.strokeRect(x, y, w, h);
     }
 
     /**
-     * Canvasの四角形を指定して
-     * @param {array} rect 
+     * 指定範囲を消去
+     * @param {Object} rect {x, y, width, height} を持つオブジェクト
      */
-    clearRect(rect) {
-        this.#ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
+    clearRect({ x, y, width, height }) {
+        this.#ctx.clearRect(x, y, width, height);
     }
 
     /**
-     * Canvasを全てクリアする
+     * Canvas全体をクリア
      */
     clearAll() {
         this.#ctx.clearRect(0, 0, this.#width, this.#height);
     }
 
-    get width() {
-        return this.#width;
-    }
+    /* --- ゲッター --- */
 
-    get height() {
-        return this.#height;
-    }
+    get width() { return this.#width; }
+    get height() { return this.#height; }
+    get ctx() { return this.#ctx; }
+    get canvas() { return this.#canvas; }
 
-    get canvas() {
-        return this.#canvas;
-    }
-
-    get ctx() {
-        return this.#ctx;
-    }
-
+    /**
+     * Canvasの表示上の位置とサイズを取得（クリック判定用）
+     */
     get clientRect() {
-        return this.#clientRect;
+        return this.#canvas.getBoundingClientRect();
     }
 }

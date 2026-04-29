@@ -10,7 +10,7 @@
  * パネルのクラス
  * クリックの制御
  * 最小値の場合はTrue、それ以外の場合はFalse
- * 
+ *
  * 課題：setter getterを使用する
  *  -    set num(), get num ()など
  */
