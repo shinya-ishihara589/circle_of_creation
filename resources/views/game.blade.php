@@ -70,6 +70,67 @@
         </div>
     </div>
     <script type="module">
+        // :TODO後ほど削除
+        class Timer {
+            #startTime = null;
+            #endTime = null;
+            #timerInterval = null;
+
+            /**
+             * タイマーを開始する
+             * @param {Function} callback 毎秒（毎フレーム）実行したい処理
+             */
+            start(callback) {
+                this.#startTime = Date.now();
+                this.#endTime = null;
+
+                // 以前のタイマーが動いていれば止める
+                if (this.#timerInterval) clearInterval(this.#timerInterval);
+
+                // 10ミリ秒ごとに計算してcallbackに渡す
+                this.#timerInterval = setInterval(() => {
+                    if (callback) callback(this.formattedTime);
+                }, 10);
+            }
+
+            /**
+             * タイマーを停止する
+             */
+            stop() {
+                this.#endTime = Date.now();
+                clearInterval(this.#timerInterval);
+            }
+
+            /**
+             * リセット
+             */
+            reset() {
+                this.stop();
+                this.#startTime = null;
+                this.#endTime = null;
+            }
+
+            /**
+             * 現在の経過時間を「00:00.00」の形式で取得する（読み取り専用）
+             */
+            get formattedTime() {
+                if (!this.#startTime) return "0:00.00";
+
+                const now = this.#endTime || Date.now();
+                const diffMs = now - this.#startTime;
+
+                const m = Math.floor(diffMs / 60000);
+                const s = Math.floor((diffMs % 60000) / 1000);
+                const ms = Math.floor((diffMs % 1000) / 10);
+
+                const strM = String(m).padStart(1, '0');
+                const strS = String(s).padStart(2, '0');
+                const strMs = String(ms).padStart(2, '0');
+
+                return `${strM}:${strS}.${strMs}`;
+            }
+        }
+
         const canvas = document.getElementById('canvas');
         const canvasRenderer = new CanvasRenderer('canvas');
         const timer = new Timer();
@@ -174,68 +235,6 @@
                 panel = new NumberTouchGameManager(panel.numOfSides);
             }
         });
-
-
-        // :TODO後ほど削除
-        class Timer {
-            #startTime = null;
-            #endTime = null;
-            #timerInterval = null;
-
-            /**
-             * タイマーを開始する
-             * @param {Function} callback 毎秒（毎フレーム）実行したい処理
-             */
-            start(callback) {
-                this.#startTime = Date.now();
-                this.#endTime = null;
-
-                // 以前のタイマーが動いていれば止める
-                if (this.#timerInterval) clearInterval(this.#timerInterval);
-
-                // 10ミリ秒ごとに計算してcallbackに渡す
-                this.#timerInterval = setInterval(() => {
-                    if (callback) callback(this.formattedTime);
-                }, 10);
-            }
-
-            /**
-             * タイマーを停止する
-             */
-            stop() {
-                this.#endTime = Date.now();
-                clearInterval(this.#timerInterval);
-            }
-
-            /**
-             * リセット
-             */
-            reset() {
-                this.stop();
-                this.#startTime = null;
-                this.#endTime = null;
-            }
-
-            /**
-             * 現在の経過時間を「00:00.00」の形式で取得する（読み取り専用）
-             */
-            get formattedTime() {
-                if (!this.#startTime) return "0:00.00";
-
-                const now = this.#endTime || Date.now();
-                const diffMs = now - this.#startTime;
-
-                const m = Math.floor(diffMs / 60000);
-                const s = Math.floor((diffMs % 60000) / 1000);
-                const ms = Math.floor((diffMs % 1000) / 10);
-
-                const strM = String(m).padStart(1, '0');
-                const strS = String(s).padStart(2, '0');
-                const strMs = String(ms).padStart(2, '0');
-
-                return `${strM}:${strS}.${strMs}`;
-            }
-        }
     </script>
 </body>
 
