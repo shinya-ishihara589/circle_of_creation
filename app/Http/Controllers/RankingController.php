@@ -17,7 +17,7 @@ class RankingController extends Controller
         $ranking->save();
 
         $ranking = new Ranking;
-        $rankingData = $ranking->limit(10)->orderBy('time')->get();
+        $rankingData = $ranking->limit(50)->orderBy('time')->get();
 
         return response()->json($rankingData);
     }
