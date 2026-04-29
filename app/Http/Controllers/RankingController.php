@@ -13,6 +13,7 @@ class RankingController extends Controller
         $ranking = new Ranking;
         $ranking->name = $request->name ?? '匿名';
         $ranking->time = $request->time;
+        $ranking->ip = $request->ip();
         $ranking->save();
     }
 }

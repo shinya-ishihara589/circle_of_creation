@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('rankings', function (Blueprint $table) {
+        Schema::table('laravel.rankings', function (Blueprint $table) {
             $table->string('name', 255)->after('id');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('rankings', function (Blueprint $table) {
+        Schema::table('laravel.rankings', function (Blueprint $table) {
             $table->dropColumn('name');
         });
     }

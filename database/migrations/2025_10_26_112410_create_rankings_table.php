@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laravel.rankings', function (Blueprint $table) {
+        Schema::create('rankings', function (Blueprint $table) {
             $table->id();
             $table->string('time', 255);
             $table->timestamps();
