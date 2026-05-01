@@ -173,9 +173,9 @@
         </div>
     </div>
     <script type="module">
-        // 各クラスの読み込み（CanvasRendererとInputManagerは不要になりました）
-        const timer = new Timer();
+        // 各クラスの読み込み
         let panel = new NumberTouchGameManager(5);
+        const timer = new Timer();
 
         const startScreen = document.getElementById('start-screen');
         const gameContainer = document.getElementById('game-container');
