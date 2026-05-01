@@ -174,8 +174,8 @@
     </div>
     <script type="module">
         // 各クラスの読み込み
-        let panel = new NumberTouchGameManager(5);
         const timer = new Timer();
+        let panel = new NumberTouchGameManager(5);
 
         const startScreen = document.getElementById('start-screen');
         const gameContainer = document.getElementById('game-container');
