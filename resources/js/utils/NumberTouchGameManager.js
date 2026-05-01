@@ -1,32 +1,10 @@
 /**
- * ステータス
- * READY：スタートボタンの表示
- * PLAYING：パネル表示
- * CLEARED：クリアタイムの表示：実施
- * GAME_OVER：ゲームオーバーとリスタートボタンの表示
- */
-
-/**
- * パネルのクラス
- * クリックの制御
- * 最小値の場合はTrue、それ以外の場合はFalse
- *
- * 課題：setter getterを使用する
- *  -    set num(), get num ()など
+ * ナンバータッチゲームのロジック管理クラス
  */
 export class NumberTouchGameManager {
-    // :TODO 別クラスで代用予定
-    #startTime;
-    #endTime;
-    // :TODO 別クラスで代用予定
-
-    #num = 0;
-    #panelWidth = 100;
-    #panelHeight = 100;
-    #numOfSides = 5;
-    #numOfPanel;
-    #panelNums;  // panelsで代用予定
-
+    #currentNum = 0;      // 次に押すべき数字 (0から開始)
+    #numOfSides = 5;      // 1辺のパネル数
+    #panels = [];      // シャッフルされた数字配列
     #state = 'READY';
 
     #GAME_STATES = {
@@ -35,127 +13,65 @@ export class NumberTouchGameManager {
         PLAYING: 'PLAYING',
         CLEARED: 'CLEARED',
         GAME_OVER: 'GAME_OVER',
-    }
+    };
 
-    #START_PROPERTY = {
-        LAYOUT: 'START',
-    }
-
-
-    #panels;
-
-    constructor() {
-        this.#numOfPanel = this.#numOfSides * this.#numOfSides;
-
-        this.#panelNums = Array.from({
-            length: this.#numOfPanel
-        }, (_, i) => i);
-
-        for (let i = this.#panelNums.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * i);
-            [this.#panelNums[i], this.#panelNums[j]] = [this.#panelNums[j], this.#panelNums[i]];
-        }
-    }
-
-    pushStart() {
-        this.#state = 'START';
-        this.#startTime = new Date();
+    constructor(numOfSides = 5) {
+        this.#numOfSides = numOfSides;
+        this.initGame();
     }
 
     /**
-     * 当たり判定
-     * @return Integer
+     * ゲームの初期化（配列作成とシャッフル）
      */
-    judge(clickPosX, clickPosY) {
-        let panelNum = this.getNumForPos(clickPosX, clickPosY);
-        let isCorrect = false;
-        // 1.
-        if (this.#num === this.#panelNums[panelNum]) {
-            isCorrect = true;
-        }
+    initGame() {
+        this.#currentNum = 0;
+        this.#state = this.#GAME_STATES.READY;
+        const totalPanels = this.#numOfSides * this.#numOfSides;
 
-        if (this.#panelNums.length === this.#num + 1 && this.#num === this.#panelNums[panelNum]) {
-            this.#endTime = new Date();
-            this.#state = this.#GAME_STATES.CLEARED;
+        // 0 ～ (total-1) の配列を作成
+        this.#panels = Array.from({ length: totalPanels }, (_, i) => i);
+
+        // フィッシャー–イェーツのシャッフル
+        for (let i = this.#panels.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.#panels[i], this.#panels[j]] = [this.#panels[j], this.#panels[i]];
         }
-        return isCorrect;
     }
 
     /**
-     * 列数×辺数+行数=パネル番号
-     * パネル番号の配列番号を取得する
+     * 正解判定（DOMから受け取った数字で判定）
+     * @param {number} tappedNum 押されたパネルの数字
+     * @return {boolean}
      */
-    getNumForPos(posX, posY) {
-        // X軸からXのパネル列を取得する
-        // バグあり：ギリギリで取得すると0と6が存在する
-        let panelCol = Math.floor(posX / 100);
-        let panelRow = Math.floor(Math.floor(posY / 100) % this.#numOfSides);
-        // 計算方法を修正する
-        let num = panelRow * this.#numOfSides + panelCol;
-        return num;
-    }
+    checkAnswer(tappedNum) {
+        if (this.#state !== this.#GAME_STATES.PLAYING) return false;
 
-    getPos() {
-        const arrKey = this.#panelNums.indexOf(this.#num);
-        let x = (arrKey % this.#numOfSides) * this.#panelWidth;
-        let y = Math.floor(arrKey / this.#numOfSides) * this.#panelHeight;
-        return {
-            x: x,
-            y: y,
+        // 次に押すべき数字と一致しているか
+        if (tappedNum === this.#currentNum) {
+            this.#currentNum++;
+
+            // 全て押し終えたか判定
+            if (this.#currentNum === this.#panels.length) {
+                this.#state = this.#GAME_STATES.CLEARED;
+            }
+            return true;
         }
-    }
-    numCount() {
-        this.#num++;
+        return false;
     }
 
-    get num() {
-        return this.#num;
-    }
+    /* --- Getter / Setter --- */
 
-    get panelNums() {
-        return this.#panelNums;
-    }
-
-    get width() {
-        return this.#panelWidth;
-    }
-
-    get height() {
-        return this.#panelHeight;
-    }
-
-    get state() {
-        return this.#state;
-    }
-
-    get numOfSides() {
-        return this.#numOfSides;
-    }
-
-    get panelRect() {
-        return {
-            x: x,
-            y: x,
-            width: this.#panelWidth,
-            height: this.#panelHeight,
+    get state() { return this.#state; }
+    set state(val) {
+        if (this.#GAME_STATES[val]) {
+            this.#state = val;
         }
     }
 
-    get clearTime() {
-        let ms = this.#endTime - this.#startTime
-        const totalSeconds = ms / 1000;
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = Math.floor(totalSeconds % 60);
-        const centiseconds = Math.floor((totalSeconds - Math.floor(totalSeconds)) * 100);
+    get panels() { return this.#panels; }
+    get currentNum() { return this.#currentNum; }
+    get numOfSides() { return this.#numOfSides; }
 
-        // 秒と小数点以下はゼロ埋め
-        const s = String(seconds).padStart(2, '0');
-        const cs = String(centiseconds).padStart(2, '0');
-
-        return `${minutes}:${s}.${cs}`;
-    }
-
-    set state(state) {
-        this.#state = state;
-    }
+    // クリアしたかどうか
+    get isCleared() { return this.#state === this.#GAME_STATES.CLEARED; }
 }

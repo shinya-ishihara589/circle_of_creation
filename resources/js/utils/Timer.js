@@ -1,7 +1,7 @@
 /**
  * ゲームタイマーを管理するクラス
  */
-export class GameTimer {
+export class Timer {
     #startTime = null;
     #endTime = null;
     #timerInterval = null;
@@ -14,13 +14,18 @@ export class GameTimer {
         this.#startTime = Date.now();
         this.#endTime = null;
 
-        // 以前のタイマーが動いていれば止める
-        if (this.#timerInterval) clearInterval(this.#timerInterval);
+        const update = () => {
+            if (!this.#startTime || this.#endTime) {
+                return;
+            }
 
-        // 10ミリ秒ごとに計算してcallbackに渡す
-        this.#timerInterval = setInterval(() => {
-            if (callback) callback(this.formattedTime);
-        }, 10);
+            if (callback) {
+                callback(this.formattedTime);
+            }
+            this.#timerInterval = requestAnimationFrame(update);
+        };
+
+        this.#timerInterval = requestAnimationFrame(update);
     }
 
     /**
@@ -28,7 +33,7 @@ export class GameTimer {
      */
     stop() {
         this.#endTime = Date.now();
-        clearInterval(this.#timerInterval);
+        cancelAnimationFrame(this.#timerInterval);
     }
 
     /**
