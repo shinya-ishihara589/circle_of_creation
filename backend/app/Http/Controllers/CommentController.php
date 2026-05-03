@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Comment;
+use App\Models\Ranking;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class CommentController extends Controller
+{
+    function index(Request $request, $num = 5)
+    {
+        Log::info($request->ip());
+        $ranking = new Ranking;
+        $rankingData = $ranking->limit(50)->orderBy('time')->get();
+
+        if ($num < 2) {
+            $num = 2;
+        } else if ($num > 5) {
+            $num = 5;
+        }
+
+        return view('game', compact('rankingData', 'num'));
+    }
+
+    function store(Request $request)
+    {
+        $comment = new Comment;
+        $comment->name = $request->input('name');
+        $comment->comment = $request->input('comment');
+        $comment->save();
+        $comments = Comment::get();
+        return view('comments.index', compact(['comments']));
+    }
+
+    function ranking()
+    {
+        return Comment::count();
+    }
+}

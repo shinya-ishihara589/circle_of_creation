@@ -1,31 +1,27 @@
 services:
-  php:
-    build: ./docker/php
-    container_name: php-fpm
+  backend:
+    build: ./infra/docker/php
+    container_name: backend
     volumes:
-      - ./:/var/www/html
+      - ./backend:/var/www/html
   nginx:
-    build: ./docker/nginx
+    build: ./infra/docker/nginx
     container_name: nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./:/var/www/html
-      - ./docker/nginx:/etc/nginx/conf.d
-      - cert-data:/etc/letsencrypt
-      - ./docker/nginx/html:/var/www/html/cert-check
+      - ./backend/:/var/www/html
+      - ./infra/docker/nginx:/etc/nginx/conf.d
+      - ${SSL_CERT_PATH}:/etc/letsencrypt/live/www.squreation.com/fullchain.pem
+      - ${SSL_KEY_PATH}:/etc/letsencrypt/live/www.squreation.com/privkey.pem
+      - ./infra/docker/nginx/html:/var/www/html/cert-check
     depends_on:
-      - php
+      - backend
   db:
     image: mysql:8.0
     container_name: mysql
     restart: always
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - dbdata:/var/lib/mysql
   certbot:
@@ -33,7 +29,7 @@ services:
     container_name: certbot
     volumes:
       - cert-data:/etc/letsencrypt
-      - ./docker/nginx/html:/var/www/html
+      - ./infra/docker/nginx/html:/var/www/html
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12d & wait $${!}; done;'"
 
 volumes:
