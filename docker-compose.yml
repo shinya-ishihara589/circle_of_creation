@@ -15,8 +15,6 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
       - cert-data:/etc/letsencrypt
       - ./docker/nginx/html:/var/www/html/cert-check
-    #   - ${SSL_CERT_PATH}:/etc/nginx/ssl/server.pem
-    #   - ${SSL_KEY_PATH}:/etc/nginx/ssl/server-key.pem
     depends_on:
       - php
   db:
