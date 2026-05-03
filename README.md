@@ -7,6 +7,9 @@ docker compose exec backend npm run build
 
 docker compose exec backend php artisan migrate
 
+# storageの記載
+chmod -R 777 storage bootstrap/cache
+
 cd frontend
 npm install
 npm run build
