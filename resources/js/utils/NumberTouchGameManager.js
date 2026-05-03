@@ -2,9 +2,9 @@
  * ナンバータッチゲームのロジック管理クラス
  */
 export class NumberTouchGameManager {
-    #currentNum = 0;      // 次に押すべき数字 (0から開始)
-    #numOfSides = 5;      // 1辺のパネル数
-    #panels = [];      // シャッフルされた数字配列
+    #currentNum = 0;        // 次に押すべき数字 (0から開始)
+    #numOfSides = 5;        // 1辺のパネル数
+    #panels = [];           // シャッフルされた数字配列
     #state = 'READY';
 
     #GAME_STATES = {
@@ -16,6 +16,11 @@ export class NumberTouchGameManager {
     };
 
     constructor(numOfSides = 5) {
+        if (numOfSides < 2) {
+            numOfSides = 2;
+        } else if (numOfSides > 5) {
+            numOfSides = 5;
+        }
         this.#numOfSides = numOfSides;
         this.initGame();
     }

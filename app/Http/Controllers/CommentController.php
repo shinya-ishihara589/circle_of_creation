@@ -9,13 +9,19 @@ use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
-    function index(Request $request)
+    function index(Request $request, $num = 5)
     {
         Log::info($request->ip());
         $ranking = new Ranking;
         $rankingData = $ranking->limit(50)->orderBy('time')->get();
 
-        return view('game', compact('rankingData'));
+        if ($num < 2) {
+            $num = 2;
+        } else if ($num > 5) {
+            $num = 5;
+        }
+
+        return view('game', compact('rankingData', 'num'));
     }
 
     function store(Request $request)
