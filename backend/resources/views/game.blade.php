@@ -22,8 +22,8 @@
             background: #fff;
             border: 1px solid #ccc;
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(5, 1fr);
+            grid-template-columns: repeat(var(--grid-count), 1fr);
+            grid-template-rows: repeat(var(--grid-count), 1fr);
             gap: 2px;
             user-select: none;
             touch-action: manipulation;
@@ -132,7 +132,7 @@
                 <div class="mb-3 d-flex align-items-center justify-content-center">
                     <!-- 名前入力 -->
                     <div class="me-3">
-                        名前：<input id="nameInput" type="text" maxlength="20" class="form-control d-inline-block w-auto" value="匿名">
+                        名前：<input id="nameInput" type="text" maxlength="20" class="form-control d-inline-block w-auto" placeholder="空欄だと匿名になります">
                     </div>
 
                     <!-- タイマー（ここに追加） -->
@@ -142,15 +142,14 @@
                 </div>
 
                 <!-- ゲームエリア -->
-                <div id="game-container">
-                    <!-- ここにJSで .number-node が25個生成される -->
+                <div id="game-container" style="--grid-count: {{ $num }};">
 
                     <!-- スタート画面（初期状態で表示） -->
                     <div id="start-screen" class="game-overlay">
                         <div class="game-rules">
-                            <h3>ナンバータッチ</h3>
+                            <h3>ナンバータッチ({{ $num }} × {{ $num }})</h3>
                             <ul>
-                                <li>1から順に25までタップ！</li>
+                                <li>1から順に{{ $num ** 2 }}までタップ！</li>
                                 <li>ミスしてもペナルティはありません</li>
                                 <li>最速タイムを目指そう！</li>
                             </ul>
@@ -165,7 +164,7 @@
             <div class="col-md-4 p-4 bg-light">
                 <h3 class="h5 border-bottom pb-2 mb-3">ランキング</h3>
                 <div id="ranking-list">
-                    @foreach ($rankingData as $no => $ranking)
+                    @foreach ($rankings as $no => $ranking)
                     <p>{{ $no + 1 }}位：{{ $ranking->name }}：{{ $ranking->time }}</p>
                     @endforeach
                 </div>
@@ -175,15 +174,13 @@
     <script type="module">
         // 各クラスの読み込み
         const timer = new Timer();
-        let panel = new NumberTouchGameManager(5);
+        let panel = new NumberTouchGameManager(@json($num));
 
         const startScreen = document.getElementById('start-screen');
         const gameContainer = document.getElementById('game-container');
         // ゲーム開始ボタンのイベント
         document.getElementById('start-btn').addEventListener('pointerdown', () => {
-            startScreen.style.display = 'none'; // ルール画面を消す
-
-            // ゲームコンテナを「空」にしてから数字を並べる
+            startScreen.style.display = 'none';
             startGame();
         });
 
@@ -249,6 +246,8 @@
                 data: {
                     name: name,
                     time: finalTime,
+                    num: @json($num),
+                    difficulty: 'easy',
                     _token: document.querySelector('meta[name="csrf-token"]').content
                 },
                 dataType: "json",
@@ -261,7 +260,7 @@
             });
         }
 
-        // 初回実行
+        // ゲーム開始初行
         render();
     </script>
 </body>

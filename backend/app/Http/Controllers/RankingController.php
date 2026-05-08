@@ -13,20 +13,35 @@ class RankingController extends Controller
         $ranking = new Ranking;
         $ranking->name = $request->name ?? '匿名';
         $ranking->time = $request->time;
+        $ranking->panel = $request->num;
+        $ranking->difficulty = 'easy';
         $ranking->ip_address = $request->ip();
         $ranking->save();
 
-        $ranking = new Ranking;
-        $rankingData = $ranking->limit(50)->orderBy('time')->get();
+        $num = $request->num;
+        if ($num < 2) {
+            $num = 2;
+        } else if ($num > 5) {
+            $num = 5;
+        }
 
-        return response()->json($rankingData);
+        $difficulty = 'easy';
+
+        $rankingQuery = new Ranking;
+        $rankingQuery = $rankingQuery->where('panel', $num);
+        $rankingQuery = $rankingQuery->where('difficulty', $difficulty);
+        $rankingQuery = $rankingQuery->limit(15);
+        $rankingQuery = $rankingQuery->orderBy('time');
+        $rankings = $rankingQuery->get();
+
+        return response()->json($rankings);
     }
 
     function get()
     {
         $ranking = new Ranking;
-        $rankingData = $ranking->limit(10)->orderBy('time')->get();
+        $rankings = $ranking->limit(10)->orderBy('time')->get();
 
-        return response()->json(['message' => 'データを受信しました', 'response' => $rankingData]);
+        return response()->json(['message' => 'データを受信しました', 'response' => $rankings]);
     }
 }

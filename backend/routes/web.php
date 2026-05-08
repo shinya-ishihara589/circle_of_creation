@@ -15,7 +15,8 @@ use App\Http\Controllers\RankingController;
 |
 */
 
-Route::resource('/{num?}', CommentController::class);
+Route::get('/', [CommentController::class, 'index']);
+Route::get('/game/{num}', [CommentController::class, 'game']);
 Route::get('/ranking', [CommentController::class, 'ranking']);
 Route::post('/ranking/update', [RankingController::class, 'update']);
 Route::get('/ranking/get', [RankingController::class, 'get']);
