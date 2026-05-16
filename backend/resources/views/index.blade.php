@@ -14,7 +14,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="bg-dark d-flex align-items-center min-vh-100">
+<body class="bg-light d-flex align-items-center min-vh-100">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-4">
@@ -29,7 +29,11 @@
                             <a href="/game/4" class="btn btn-outline-primary btn-lg">4 × 4</a>
                             <a href="/game/5" class="btn btn-outline-primary btn-lg">5 × 5</a>
                         </div>
-
+                        <h1 class="h4 mt-5 mb-4 fw-bold">不等号ゲーム</h1>
+                        <!-- ボタン一覧 -->
+                        <div class="d-grid gap-3">
+                            <a href="/inequality-game" class="btn btn-outline-primary btn-lg">不等号ゲーム※ランキングは未実装です</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -49,4 +49,21 @@ class CommentController extends Controller
     {
         return Comment::count();
     }
+
+
+    function inequality_game()
+    {
+        return view('inequality_game');
+    }
+
+    function inequality_store(Request $request)
+    {
+        $ranking = new Ranking;
+        $ranking->name = '不等号ゲーム';
+        $ranking->time = '9:59.99';
+        $ranking->panel = 1;
+        $ranking->difficulty = 'easy';
+        $ranking->ip_address = $request->ip();
+        $ranking->save();
+    }
 }

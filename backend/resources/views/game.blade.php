@@ -121,7 +121,7 @@
     </style>
 </head>
 
-<body class="bg-dark">
+<body class="bg-light">
     <div class="container-fluid bg-white shadow" style="max-width: 1000px; min-height: 100vh;">
         <div class="row">
             <!-- 左側：メインゲーム画面 -->
