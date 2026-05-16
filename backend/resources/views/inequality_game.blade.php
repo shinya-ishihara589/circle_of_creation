@@ -217,7 +217,7 @@
 
         function startGame() {
             score = 0;
-            timeLeft = 1;
+            timeLeft = 30;
             document.getElementById('score').innerText = score;
             document.getElementById('timer').innerText = timeLeft;
             document.getElementById('start-screen').classList.add('hidden');
