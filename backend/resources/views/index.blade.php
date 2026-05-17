@@ -32,7 +32,7 @@
                         <h1 class="h4 mt-5 mb-4 fw-bold">不等号ゲーム</h1>
                         <!-- ボタン一覧 -->
                         <div class="d-grid gap-3">
-                            <a href="/inequality-game" class="btn btn-outline-primary btn-lg">不等号ゲーム※ランキングは未実装です</a>
+                            <a href="/inequality-game" class="btn btn-outline-primary btn-lg">不等号ゲーム</a>
                         </div>
                     </div>
                 </div>
