@@ -2,20 +2,22 @@ services:
   backend:
     build: ./infra/docker/php
     container_name: backend
+    network_mode: "host"
     volumes:
       - ./backend:/var/www/html
   nginx:
     build: ./infra/docker/nginx
     container_name: nginx
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
-      - target: 443
-        published: 443
-        protocol: tcp
-        mode: host
+    network_mode: "host"
+    # ports:
+    #   - target: 80
+    #     published: 80
+    #     protocol: tcp
+    #     mode: host
+    #   - target: 443
+    #     published: 443
+    #     protocol: tcp
+    #     mode: host
     volumes:
       - ./backend/:/var/www/html
       - ./infra/docker/nginx:/etc/nginx/conf.d
