@@ -212,4 +212,5 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'radio_password' => env('RADIO_PASSWORD', false),
 ];

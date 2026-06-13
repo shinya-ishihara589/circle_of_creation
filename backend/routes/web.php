@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BrainstormingController;
+use App\Http\Controllers\RadioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +25,7 @@ Route::post('/inequality-game', [CommentController::class, 'inequality_store']);
 Route::get('/ranking', [CommentController::class, 'ranking']);
 Route::post('/ranking/update', [RankingController::class, 'update']);
 Route::get('/ranking/get', [RankingController::class, 'get']);
+Route::get('/home', [HomeController::class, 'index']);
+Route::get('/brainstorming', [BrainstormingController::class, 'index']);
+Route::get('/radio', [RadioController::class, 'index']);
+Route::get('/radio/{pass}', [RadioController::class, 'radio']);
