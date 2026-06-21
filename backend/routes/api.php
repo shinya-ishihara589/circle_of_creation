@@ -15,6 +15,9 @@ use App\Http\Controllers\CommentController;
 |
 */
 
+Route::get('/test', function () {
+    return ['message' => 'API OK'];
+});
 Route::resource('comments', CommentController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
