@@ -1,26 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ラジオ視聴側</title>
+    <!-- PeerJSの読み込み -->
+    <script src="https://unpkg.com"></script>
+</head>
 
 <body>
-    <h2>Chat</h2>
-    <input id="msg" placeholder="メッセージ">
-    <button onclick="send()">送信</button>
-    <div id="log"></div>
+    <h1>ラジオ視聴画面</h1>
 
-    <script>
-        const ws = new WebSocket("ws://localhost:8080");
-        const log = document.getElementById("log");
+    <input type="text" id="broadcast-id" placeholder="配信IDを入力">
+    <button id="join-btn">入室して聴く</button>
 
-        ws.onmessage = (e) => {
-            const div = document.createElement("div");
-            div.textContent = e.data;
-            log.appendChild(div);
-        };
+    <p id="status">IDを入力してボタンを押してください。</p>
 
-        function send() {
-            ws.send(document.getElementById("msg").value);
-        }
-    </script>
+    <!-- 音声再生用のタグ（ブラウザ制限回避のため controls を推奨、非表示でも可） -->
+    <audio id="remote-audio" autoplay controls></select>
+
+        <script>
+            const peer = new Peer();
+
+            document.getElementById('join-btn').addEventListener('click', () => {
+                const broadcastId = document.getElementById('broadcast-id').value;
+                if (!broadcastId) {
+                    alert('IDを入力してください');
+                    return;
+                }
+
+                document.getElementById('status').innerText = '接続中...';
+
+                // ブラウザの仕様上、ユーザーが画面を操作（クリック）した後にしか音声を再生できないためここで処理
+                const audio = document.getElementById('remote-audio');
+
+                // 配信者に対して空のダミーストリームでコールをかける（聴くだけなのでマイクは不要）
+                const call = peer.call(broadcastId, new MediaStream());
+
+                // 配信者から音声ストリームが届いたら audio タグにセット
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('status').innerText = '受信中（生放送）';
+                    audio.srcObject = remoteStream;
+                    audio.play().catch(e => {
+                        document.getElementById('status').innerText = '再生エラー。画面をクリックして再生を許可してください。';
+                    });
+                });
+
+                call.on('close', () => {
+                    document.getElementById('status').innerText = '配信が終了しました。';
+                });
+            });
+        </script>
 </body>
 
 </html>
