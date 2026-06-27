@@ -27,5 +27,7 @@ Route::post('/ranking/update', [RankingController::class, 'update']);
 Route::get('/ranking/get', [RankingController::class, 'get']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/brainstorming', [BrainstormingController::class, 'index']);
-Route::get('/radio', [RadioController::class, 'index']);
-Route::get('/radio/{pass}', [RadioController::class, 'radio']);
+
+
+Route::get('/radio/{pass}', [RadioController::class, 'radio']); // ラジオパーソナリティスペース
+Route::get('/radio', [RadioController::class, 'index']);        // ラジオリスナースペース

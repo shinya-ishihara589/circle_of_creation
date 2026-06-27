@@ -3,44 +3,56 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ラジオ配信側</title>
-    <!-- PeerJSの読み込み -->
-    <script src="https://unpkg.com"></script>
+    <title>ラジオ配信（登録不要）</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>ラジオ配信管理画面</h1>
-    <p>あなたの配信ID: <strong id="my-id">発行中...</strong></p>
-    <p style="color: green;" id="status">マイクを準備しています...</p>
+    <h1>🎙️ ラジオ生配信中</h1>
+    <p>ボタンを押すとマイク音声の配信が始まります。</p>
+    <button id="start" style="font-size: 20px; padding: 10px 20px;">配信開始</button>
 
     <script>
-        let localStream;
-        // 1. 自分のマイク音声を取得
-        navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: false
-            })
-            .then(stream => {
-                localStream = stream;
-                document.getElementById('status').innerText = 'マイク準備完了。IDをリスナーに共有してください。';
+        // 💡 HTTPS環境に合わせて wss:// に自動切り替え
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const socket = new WebSocket(`${protocol}//${window.location.host}/ws/`);
 
-                // 2. Peerオブジェクトの作成（IDは自動発行）
-                const peer = new Peer();
-
-                // IDが確定したら画面に表示
-                peer.on('open', (id) => {
-                    document.getElementById('my-id').innerText = id;
+        document.getElementById('start').onclick = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
                 });
-
-                // 3. リスナーから接続（コール）が来たら自動で音声ストリームを返す
-                peer.on('call', (call) => {
-                    // 音声ストリームを渡して応答
-                    call.answer(localStream);
+                const audioContext = new AudioContext({
+                    sampleRate: 44100
                 });
-            })
-            .catch(err => {
-                alert('マイクの許可が必要です: ' + err);
-            });
+                const source = audioContext.createMediaStreamSource(stream);
+
+                // 2048サンプルごとに音声を切り出す
+                const processor = audioContext.createScriptProcessor(2048, 1, 1);
+
+                processor.onaudioprocess = (e) => {
+                    const inputData = e.inputBuffer.getChannelData(0);
+                    if (socket.readyState === WebSocket.OPEN) {
+                        // 音声バイナリデータをそのまま送信
+                        socket.send(inputData.buffer);
+                    }
+                };
+
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                document.getElementById('start').innerText = "🔴 配信中...";
+                document.getElementById('start').disabled = true;
+            } catch (err) {
+                alert('マイクの取得に失敗しました。HTTPS環境、またはマイクの権限を確認してください: ' + err);
+            }
+        };
     </script>
 </body>
 
