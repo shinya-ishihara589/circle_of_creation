@@ -10,8 +10,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./backend:/var/www/html
-    command: node radio-server.js
-    # 👇 ports から expose に書き換えます
+    command: sh -c "npm install && node radio-server.js"
     expose:
       - "8080"
     restart: always
