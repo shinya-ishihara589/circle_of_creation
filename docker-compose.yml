@@ -24,7 +24,7 @@ services:
     # WSL2の80番と443番ポートを、コンテナ内のNginxが直接ガッチリと掴んで待ち受けます。
     volumes:
       - ./backend/:/var/www/html
-      - ./infra/docker/nginx:/etc/nginx/conf.d
+      - ./infra/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - cert-data:/etc/letsencrypt
       - ./infra/docker/nginx/html:/var/www/html/cert-check
     depends_on:
