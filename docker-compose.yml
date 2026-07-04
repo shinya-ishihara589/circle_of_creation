@@ -2,7 +2,6 @@ services:
   backend:
     build: ./infra/docker/php
     container_name: backend
-    # 💡 ports: "9000:9000" は不要になったので削除して元に戻しています
     volumes:
       - ./backend:/var/www/html
 
@@ -14,20 +13,21 @@ services:
       - ./backend:/var/www/html
     command: sh -c "npm install && node radio-server.js"
     expose:
-      - "8080" # 💡 ports: "8080:8080" から 元の expose に戻しています
+      - "8080"
     restart: always
 
   nginx:
     build: ./infra/docker/nginx
     container_name: nginx
-    # 💡 network_mode: "host" を削除し、通常の通信に戻しました
     ports:
       - target: 80
         published: 80
         protocol: tcp
+        mode: host
       - target: 443
         published: 443
         protocol: tcp
+        mode: host
     volumes:
       - ./backend/:/var/www/html
       - ./infra/docker/nginx:/etc/nginx/conf.d
