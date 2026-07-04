@@ -24,18 +24,11 @@ services:
         published: 80
         protocol: tcp
         mode: host
-      # 👇 実験のために、外から受けるポートを「8443」番に変えます
+      # 👇 外から受ける実験用ポートを「8443」番に固定します
       - target: 443
         published: 8443
         protocol: tcp
         mode: host
-    volumes:
-      - ./backend/:/var/www/html
-      - ./infra/docker/nginx:/etc/nginx/conf.d
-      - cert-data:/etc/letsencrypt
-      - ./infra/docker/nginx/html:/var/www/html/cert-check
-    depends_on:
-      - backend
 
 
   db:
