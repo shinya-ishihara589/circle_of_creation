@@ -31,3 +31,10 @@ Route::get('/brainstorming', [BrainstormingController::class, 'index']);
 
 Route::get('/radio/{pass}', [RadioController::class, 'radio']); // ラジオパーソナリティスペース
 Route::get('/radio', [RadioController::class, 'index']);        // ラジオリスナースペース
+
+Route::get('/ip', function () {
+    return response()->json([
+        'Laravelが認識したあなたのIP' => request()->ip(),
+        'Nginxから渡された生データ' => request()->header('X-Forwarded-For'),
+    ]);
+});
