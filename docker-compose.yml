@@ -2,15 +2,15 @@ services:
   backend:
     build: ./infra/docker/php
     container_name: backend
-    network_mode: host # 👈 【修正】WSL2のネットワークと完全に一体化させます
-    # 💡 network_mode: host にするため、ports: の記述はすべて削除します
+    network_mode: host
+    command: php-fpm -D -d listen=127.0.0.1:9000
     volumes:
       - ./backend:/var/www/html
 
   radio-server:
     image: node:20-alpine
     container_name: radio-server
-    network_mode: host # 👈 【修正】
+    network_mode: host
     working_dir: /var/www/html
     volumes:
       - ./backend:/var/www/html
@@ -20,8 +20,7 @@ services:
   nginx:
     build: ./infra/docker/nginx
     container_name: nginx
-    network_mode: host # 👈 【修正】WSL2のネットワークと完全に一体化させます
-    # 💡 network_mode: host にするため、ports: の記述はすべて削除します
+    network_mode: host
     volumes:
       - ./backend/:/var/www/html
       - ./infra/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -34,7 +33,7 @@ services:
   db:
     image: mysql:8.0
     container_name: mysql
-    network_mode: host # 👈 【修正】
+    network_mode: host
     restart: always
     volumes:
       - dbdata:/var/lib/mysql
@@ -42,7 +41,7 @@ services:
   certbot:
     image: certbot/certbot
     container_name: certbot
-    network_mode: host # 👈 【修正】
+    network_mode: host
     volumes:
       - cert-data:/etc/letsencrypt
       - ./infra/docker/nginx/html:/var/www/html
