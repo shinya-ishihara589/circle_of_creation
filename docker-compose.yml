@@ -6,6 +6,7 @@ services:
     command: php-fpm -D -d listen=127.0.0.1:9000
     volumes:
       - ./backend:/var/www/html
+      - ./infra/docker/nginx/default.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
 
   radio-server:
     image: node:20-alpine
