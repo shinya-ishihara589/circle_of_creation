@@ -2,7 +2,7 @@ services:
   backend:
     build: ./infra/docker/php
     container_name: backend
-    command: php-fpm -F -d listen=127.0.0.1:9000
+    command: php-fpm -F -d listen=0.0.0.0:9000
     volumes:
       - ./backend:/var/www/html
 
