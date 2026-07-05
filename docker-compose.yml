@@ -33,7 +33,6 @@ services:
   db:
     image: mysql:8.0
     container_name: mysql
-    network_mode: host
     restart: always
     ports:
       - "3306:3306"
@@ -43,7 +42,6 @@ services:
   certbot:
     image: certbot/certbot
     container_name: certbot
-    network_mode: host
     volumes:
       - cert-data:/etc/letsencrypt
       - ./infra/docker/nginx/html:/var/www/html
