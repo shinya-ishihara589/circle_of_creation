@@ -1,14 +1,17 @@
-<script lang="ts" setup>
-import api from '@/libs/api';
+<template>
+  <div class="layout">
+    <Menu />
+    <ApiTest />
+  </div>
+</template>
 
-const load = async () => {
-  const res = await api.get('/test');
-  console.log('API Response:', res.data);
-};
-
-load();
+<script setup lang="ts">
+import Menu from '@/components/Menu.vue';
+import ApiTest from '@/components/ApiTest.vue';
 </script>
 
-<template>
-  <div>API テスト中…（結果はコンソールに表示）</div>
-</template>
+<style scoped>
+.layout {
+  display: flex;
+}
+</style>

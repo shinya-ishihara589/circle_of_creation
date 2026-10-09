@@ -5,6 +5,8 @@ services:
     command: php-fpm -F -d listen=0.0.0.0:9000
     volumes:
       - ./backend:/var/www/html
+    networks:
+      - app-net
 
   radio-server:
     image: node:20-alpine
@@ -16,6 +18,21 @@ services:
     expose:
       - "8080"
     restart: always
+    networks:
+      - app-net
+
+  frontend:
+    image: node:20-alpine
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "5173:5173"
+    restart: always
+    networks:
+      - app-net
 
   nginx:
     build: ./infra/docker/nginx
@@ -31,7 +48,10 @@ services:
       - ./infra/docker/nginx/html:/var/www/html/cert-check
     depends_on:
       - backend
+      - frontend
       - db
+    networks:
+      - app-net
 
   db:
     image: mysql:8.0
@@ -46,6 +66,8 @@ services:
       MYSQL_PASSWORD: user_password
     volumes:
       - dbdata:/var/lib/mysql
+    networks:
+      - app-net
 
   certbot:
     image: certbot/certbot
@@ -54,7 +76,13 @@ services:
       - cert-data:/etc/letsencrypt
       - ./infra/docker/nginx/html:/var/www/html
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12d & wait $${!}; done;'"
+    networks:
+        - app-net
 
 volumes:
   cert-data:
   dbdata:
+
+networks:
+  app-net:
+    driver: bridge
